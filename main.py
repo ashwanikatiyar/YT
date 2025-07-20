@@ -6,21 +6,29 @@ from google.oauth2.credentials import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
 
-# Get secrets
+# === CONFIG ===
 BARK_AUDIO_URL = os.getenv("BARK_AUDIO_URL")
 BACKGROUND_IMAGE = "background.jpg"
 
 print("🔊 Downloading Bark audio...")
-audio_data = requests.get(BARK_AUDIO_URL).content
+
+response = requests.get(BARK_AUDIO_URL)
+print(f"Status code: {response.status_code}")
+if response.status_code != 200:
+    raise Exception(f"Failed to download audio! HTTP {response.status_code}")
+
 with open("voice.wav", "wb") as f:
-    f.write(audio_data)
+    f.write(response.content)
+
+# Validate downloaded file
+size = os.path.getsize("voice.wav")
+print(f"Downloaded file size: {size} bytes")
+if size < 1000:
+    raise Exception("Downloaded voice.wav is too small, probably invalid!")
 
 print("🎞️ Creating video using FFmpeg...")
 
-# Create the video with FFmpeg directly
-# - Loop background image to match audio length
-# - Combine audio and image into a 9:16 mp4
-
+# Run ffmpeg
 subprocess.run([
     "ffmpeg",
     "-y",
