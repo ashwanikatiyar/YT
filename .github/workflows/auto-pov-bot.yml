@@ -40,9 +40,7 @@ jobs:
           python main.py
       - name: Create virtualenv
         run: |
-          python -m venv venv
-          source venv/bin/activate
-          which python
+          
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
           python -m pip show moviepy
