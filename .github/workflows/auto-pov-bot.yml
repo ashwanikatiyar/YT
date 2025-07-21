@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: "*/30 * * * *"
   workflow_dispatch:
+    inputs:
+      bark_audio_url:
+        description: 'URL of the Bark TTS audio'
+        required: true
 
 jobs:
   run:
@@ -29,7 +33,7 @@ jobs:
 
       - name: Run bot
         env:
-          BARK_AUDIO_URL: ${{ secrets.BARK_AUDIO_URL }}
+          BARK_AUDIO_URL: ${{ github.event.inputs.bark_audio_url }}
           YT_CREDS_JSON: ${{ secrets.YT_CREDS_JSON }}
         run: |
           which python
